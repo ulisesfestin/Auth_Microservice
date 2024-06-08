@@ -134,5 +134,3 @@ Thumbs.db
 # Database
 migrations/
 
-# Dockerfile
-Dockerfile

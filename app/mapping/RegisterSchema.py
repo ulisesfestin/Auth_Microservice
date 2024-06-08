@@ -7,7 +7,7 @@ class RegisterSchema(Schema):
     lastname = fields.Str(required=True, validate=validate.Length(min=1, max=100))
     phone_number = fields.Str(required=True, validate=validate.Length(min=1, max=15))
     email_address = fields.Str(required=True, validate=validate.Email())
-    password = fields.Str(load_only=True)
+    password = fields.Str(required=True)
 
     @post_load
     def make_register_request(self, data, **kwargs):
