@@ -2,6 +2,7 @@ from app.models import LoginRequest, RegisterRequest
 from app.mapping import RegisterSchema
 from tenacity import retry, stop_after_attempt, wait_random
 import requests
+import os
 
 register_schema = RegisterSchema()
 
@@ -24,7 +25,7 @@ class AuthService:
 
     @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=2))
     def register_user(self, register_data):
-        requests.post('http://user.um.localhost:5000/api/v1/user/create', json=register_schema.dump(register_data))
+        requests.post(os.getenv('URL_CREATE_USER'), json=register_schema.dump(register_data))
 
     @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=2))
     def get_user_by_email(self, data):
@@ -32,7 +33,7 @@ class AuthService:
             mail = data.email.replace('"', '').replace("'", "")
         elif isinstance(data, RegisterRequest):
             mail = data.email_address.replace('"', '').replace("'", "")
-        request = requests.get('http://user.um.localhost:5000/api/v1/user/findbymail/{}'.format(mail))
+        request = requests.get(os.getenv('URL_FINDBYMAIL_USER').format(mail))
         return request
 
     def login(self, login_data: LoginRequest):
@@ -50,6 +51,6 @@ class AuthService:
 
     @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=2))
     def check_user_password(self, mail, password):
-        request = requests.get('http://user.um.localhost:5000/api/v1/user/checkpassword/{}/{}'.format(mail, password))
+        request = requests.get(os.getenv('URL_CHECKPASSWORD_USER').format(mail, password))
         return request
         
